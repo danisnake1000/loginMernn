@@ -12,7 +12,7 @@ export function createAccToken(payload) {
       (err, token) => {
         if (err) reject(err);
         resolve(
-          
+          token
         );
         
       }

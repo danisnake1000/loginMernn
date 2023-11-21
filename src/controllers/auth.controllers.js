@@ -57,7 +57,7 @@ export const login = async (req, res) => {
       return res.status(400).json({message: 'User not foud'})
         
     }
-    console.log(userFound);
+   
     const isMatch= await bcrypt.compare(password, userFound.password) ;
     if (!isMatch) {
       return res.status(400).json({message: 'Incorrect password'})
@@ -88,29 +88,21 @@ export const logout =(req, res) => {
   return res.sendStatus(200)
 }
 
-export const profile =(req, res) => {
-  res.send('profile')
+export const profile = async(req, res) => {
+  const userFound = await User.findById(req.user.id)
+  if (!userFound) {
+    return res.status(400).json({message: "User not found"})
+    
+  }
+  return res.json({
+    id: userFound._id,
+    username:userFound.username,
+    email: userFound.email,
+    createdAt: userFound.createdAt,
+    updatedAt: userFound.updatedAt
+  })
+
 }
 
 
-export const email =async(req, res) => {
-    const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    service:"gmail",
-    secure: false, // upgrade later with STARTTLS
-    auth: {
-      user: "grupo3Tiger@gmail.com",
-      pass: "lwxxnirelajsphmm",
-    },
-  });
-     await transporter.sendMail({
-      from: '"Dani Fernandez"adriandanielfernandez@gmail.com',
-      to:"adriandanielfernandez@gmail.com",
-      subject:" inicio de sesion",
-      body:"este es tu codigo para iniciar sesion",
-      text:"Hola"
-    }).then(()=>{
-      return res.status(200).json({message:"email mandado"})
-    })
-}
+
